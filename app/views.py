@@ -31,3 +31,62 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+def home_view(request):
+    return render(request, "home.html")
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Complaint
+from .forms import ComplaintForm
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+
+# READ – list of complaints
+def complaint_list(request):
+    complaint_list = Complaint.objects.all()
+    paginator = Paginator(complaint_list, 5)  # 5 complaints per page
+
+    page_number = request.GET.get('page')
+    complaints = paginator.get_page(page_number)
+
+    return render(request, 'complaint_list.html', {
+        'complaints': complaints
+    })
+
+# READ – detail of a single complaint
+def complaint_detail(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+    return render(request, "complaint_detail.html", {"complaint": complaint})
+
+# CREATE – complaint submission (requires login)
+@login_required
+def submit_complaint(request):
+    if request.method == "POST":
+        form = ComplaintForm(request.POST)
+        if form.is_valid():
+            # Associate the complaint with the logged-in user
+            complaint = form.save(commit=False)
+            complaint.user = request.user
+            complaint.save()
+
+            return redirect('complaint_list')  # Redirect to the complaint list after successful submission
+    else:
+        form = ComplaintForm()
+
+    return render(request, 'submit_complaint.html', {'form': form})
+
+# UPDATE – update complaint status by admin (requires login)
+@login_required
+def update_complaint_status(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+
+    if request.method == "POST":
+        form = ComplaintForm(request.POST, instance=complaint)
+        if form.is_valid():
+            form.save()
+            return redirect('complaint_detail', pk=complaint.pk)
+    else:
+        form = ComplaintForm(instance=complaint)
+
+    return render(request, 'update_complaint.html', {'form': form, 'complaint': complaint})
