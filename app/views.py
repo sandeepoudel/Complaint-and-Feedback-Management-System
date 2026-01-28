@@ -90,3 +90,19 @@ def update_complaint_status(request, pk):
         form = ComplaintForm(instance=complaint)
 
     return render(request, 'update_complaint.html', {'form': form, 'complaint': complaint})
+
+from django import forms
+from .models import Complaint
+
+class ComplaintForm(forms.ModelForm):
+    class Meta:
+        model = Complaint
+        fields = ['subject', 'message', 'email']
+    
+    def __init__(self, *args, **kwargs):
+        super(ComplaintForm, self).__init__(*args, **kwargs)
+        # Add form-control class to fields
+        self.fields['subject'].widget.attrs.update({'class': 'form-control'})
+        self.fields['message'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+
