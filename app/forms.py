@@ -35,3 +35,4 @@ class ComplaintForm(forms.ModelForm):
             "user": forms.Select(attrs={"class": "form-control"}),  # For user field, assuming it's a ForeignKey
             "created_at": forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime-local"}),  # Customize the input type
         }
+

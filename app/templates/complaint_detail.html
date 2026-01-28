@@ -93,6 +93,18 @@
             {% endif %}
           </div>
 
+            <div class="container">
+    <h2>{{ complaint.subject }}</h2>
+    <p>{{ complaint.message }}</p>
+    <p><strong>Status:</strong> {% if complaint.is_resolved %}Resolved{% else %}Pending{% endif %}</p>
+
+    {% if not complaint.is_resolved %}
+      <a href="{% url 'edit_complaint' complaint.pk %}" class="btn btn-warning">Edit Complaint</a>
+    {% endif %}
+  </div>
+
+
+
         </div>
       </div>
 

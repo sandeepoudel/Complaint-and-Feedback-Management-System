@@ -14,6 +14,7 @@ class Complaint(models.Model):
     message = models.TextField()
     email = models.EmailField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_resolved = models.BooleanField(default=False)  # To track if the complaint is resolved
 
     def __str__(self):
         return f"Complaint by {self.user.username} - {self.subject}"

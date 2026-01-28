@@ -106,3 +106,20 @@ class ComplaintForm(forms.ModelForm):
         self.fields['message'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
 
+@login_required
+def edit_complaint(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+
+    # Check if the complaint is resolved, if yes, prevent editing
+    if complaint.is_resolved:
+        return redirect('complaint_detail', pk=complaint.pk)
+
+    if request.method == 'POST':
+        form = ComplaintForm(request.POST, instance=complaint)
+        if form.is_valid():
+            form.save()
+            return redirect('complaint_detail', pk=complaint.pk)
+    else:
+        form = ComplaintForm(instance=complaint)
+
+    return render(request, 'edit_complaint.html', {'form': form, 'complaint': complaint})
