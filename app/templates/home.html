@@ -39,6 +39,7 @@
 
 <div class="row g-4 text-center">
 
+  <!-- Submit Complaints Section -->
   <div class="col-md-4">
     <div class="card h-100 shadow-sm border-0">
       <div class="card-body">
@@ -47,10 +48,14 @@
         <p class="text-muted small">
           Easily submit your complaints and track their progress.
         </p>
+        <a href="{% url 'submit_complaint' %}" class="btn btn-outline-primary btn-sm">
+          Submit a Complaint
+        </a>
       </div>
     </div>
   </div>
 
+  <!-- Track Status Section -->
   <div class="col-md-4">
     <div class="card h-100 shadow-sm border-0">
       <div class="card-body">
@@ -59,21 +64,14 @@
         <p class="text-muted small">
           Stay updated with real-time status of your complaints.
         </p>
+        <a href="{% url 'complaint_list' %}" class="btn btn-outline-primary btn-sm">
+          Track Your Complaints
+        </a>
       </div>
     </div>
   </div>
 
-  <div class="col-md-4">
-    <div class="card h-100 shadow-sm border-0">
-      <div class="card-body">
-        <div class="fs-1 mb-3">⚙️</div>
-        <h5 class="fw-semibold">Admin Dashboard</h5>
-        <p class="text-muted small">
-          Admins can manage, update, and resolve complaints with ease.
-        </p>
-      </div>
-    </div>
-  </div>
+  
 
 </div>
 
