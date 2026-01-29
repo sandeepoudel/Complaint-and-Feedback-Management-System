@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+<div class="bg-light rounded-4 p-5 mb-5 text-center shadow-sm">
+
+  {% if user.is_authenticated %}
+    <h1 class="fw-bold mb-2">
+      Welcome back, {{ user.username|default:user.email }} 👋
+    </h1>
+    <p class="text-muted fs-5">
+      Manage and track your complaints with ease.
+    </p>
+  {% else %}
+    <h1 class="fw-bold mb-2">
+      Welcome to <span class="text-primary">ComplaintManager</span>
+    </h1>
+    <p class="text-muted fs-5">
+      A streamlined system for submitting and resolving complaints.
+    </p>
+  {% endif %}
+
+  <div class="mt-4">
+    <a href="{% url 'complaint_list' %}" class="btn btn-primary btn-lg">
+      Browse Complaints
+    </a>
+  </div>
+</div>
+
+<!-- ================= FEATURES SECTION ================= -->
+<div class="text-center mb-4">
+  <h2 class="fw-bold">Why ComplaintManager?</h2>
+  <p class="text-muted">
+    Manage and resolve complaints quickly and efficiently.
+  </p>
+</div>
+
+<div class="row g-4 text-center">
+
+  <!-- Submit Complaints Section -->
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body">
+        <div class="fs-1 mb-3">📝</div>
+        <h5 class="fw-semibold">Submit Complaints</h5>
+        <p class="text-muted small">
+          Easily submit your complaints and track their progress.
+        </p>
+        <a href="{% url 'submit_complaint' %}" class="btn btn-outline-primary btn-sm">
+          Submit a Complaint
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Track Status Section -->
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body">
+        <div class="fs-1 mb-3">🔄</div>
+        <h5 class="fw-semibold">Track Status</h5>
+        <p class="text-muted small">
+          Stay updated with real-time status of your complaints.
+        </p>
+        <a href="{% url 'complaint_list' %}" class="btn btn-outline-primary btn-sm">
+          Track Your Complaints
+        </a>
+      </div>
+    </div>
+  </div>
+
+  
+
+</div>
+
+{% endblock %}

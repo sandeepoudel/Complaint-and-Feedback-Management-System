@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+<<<<<<< HEAD
     @property
     def is_admin(self):
         """Check if user has admin privileges"""
@@ -76,3 +77,15 @@ class StatusHistory(models.Model):
     def __str__(self):
         return f"{self.complaint.title}: {self.old_status} → {self.new_status}"
 
+=======
+class Complaint(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=100)
+    message = models.TextField()
+    email = models.EmailField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_resolved = models.BooleanField(default=False)  # To track if the complaint is resolved
+
+    def __str__(self):
+        return f"Complaint by {self.user.username} - {self.subject}"
+>>>>>>> origin/main

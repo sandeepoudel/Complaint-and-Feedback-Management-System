@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Complaint Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+
+  <div class="col-md-10">
+    <div class="card shadow-sm p-4">
+
+      <div class="row">
+        <!-- Complaint Image -->
+        <div class="col-md-4 text-center">
+          {% if complaint.image %}
+            <img 
+              src="{{ complaint.image.url }}" 
+              class="img-fluid rounded mb-3"
+              style="max-height: 350px;"
+            >
+          {% else %}
+            <div class="border rounded p-5 text-muted">
+              No Image Available
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Complaint Details -->
+        <div class="col-md-8">
+          <h2 class="fw-bold mb-2">{{ complaint.title }}</h2>
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted fs-5">
+              Submitted by: {{ complaint.user.username }}
+            </span>
+            <span class="fs-4 fw-bold text-success">
+              Status: 
+              {% if complaint.status == 'open' %}
+                <span class="text-warning">Open</span>
+              {% elif complaint.status == 'in_progress' %}
+                <span class="text-primary">In Progress</span>
+              {% else %}
+                <span class="text-success">Resolved</span>
+              {% endif %}
+            </span>
+          </div>
+
+          <p class="text-muted mb-2">
+            <strong>Submitted on:</strong>
+            {{ complaint.created_at|date:"F d, Y" }}
+          </p>
+
+          <hr>
+
+          <h5>Description</h5>
+          <p class="text-secondary">
+            {{ complaint.message }}
+          </p>
+
+          <hr>
+
+          <h5>Email</h5>
+          <p class="text-muted">
+            {{ complaint.email }}
+          </p>
+
+          <hr>
+
+          <h5>Admin Comments</h5>
+          <p class="text-muted">
+            {% if complaint.admin_comment %}
+              {{ complaint.admin_comment }}
+            {% else %}
+              <span class="text-muted">No comments from admin yet.</span>
+            {% endif %}
+          </p>
+
+          <hr>
+
+          <div class="mt-4 d-flex justify-content-between align-items-center">
+            <a href="{% url 'complaint_list' %}" class="btn btn-outline-secondary">
+              ← Back to Complaints
+            </a>
+
+            {% if user.is_authenticated %}
+              {% if complaint.status == 'open' %}
+                <a href="{% url 'update_complaint_status' complaint.pk %}" class="btn btn-primary">
+                  Update Status
+                </a>
+              {% endif %}
+            {% else %}
+              <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                Login to Update Status
+              </a>
+            {% endif %}
+          </div>
+
+            <div class="container">
+    <h2>{{ complaint.subject }}</h2>
+    <p>{{ complaint.message }}</p>
+    <p><strong>Status:</strong> {% if complaint.is_resolved %}Resolved{% else %}Pending{% endif %}</p>
+
+    {% if not complaint.is_resolved %}
+      <a href="{% url 'edit_complaint' complaint.pk %}" class="btn btn-warning">Edit Complaint</a>
+    {% endif %}
+  </div>
+
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
