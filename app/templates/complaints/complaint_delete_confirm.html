@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Complaint #{{ complaint.id }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Back Navigation -->
+        <div class="mb-3">
+            <a href="{% url 'admin_complaint_detail' complaint.id %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Complaint
+            </a>
+        </div>
+
+        <!-- Delete Confirmation Card -->
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> Confirm Deletion
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle"></i> Warning: This action cannot be undone!
+                    </h5>
+                    <p class="mb-0">
+                        You are about to permanently delete this complaint and all associated data, including status history. 
+                        This action is irreversible.
+                    </p>
+                </div>
+
+                <!-- Complaint Details -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-danger">Complaint to be deleted:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="card-text">
+                                    <strong>ID:</strong> #{{ complaint.id }}<br>
+                                    <strong>Title:</strong> {{ complaint.title }}<br>
+                                    <strong>Submitted by:</strong> {{ complaint.user.username }}<br>
+                                    <strong>Email:</strong> {{ complaint.user.email }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="card-text">
+                                    <strong>Category:</strong> {{ complaint.get_category_display }}<br>
+                                    <strong>Status:</strong> {{ complaint.get_status_display }}<br>
+                                    <strong>Created:</strong> {{ complaint.created_at|date:"F d, Y \a\t g:i A" }}<br>
+                                    <strong>Last Updated:</strong> {{ complaint.updated_at|date:"F d, Y \a\t g:i A" }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <strong>Description:</strong>
+                            <div class="mt-2 p-2 bg-white rounded border">
+                                {{ complaint.description|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Form -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                            <label class="form-check-label" for="confirmDelete">
+                                I understand that this action is permanent and cannot be undone
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_complaint_detail' complaint.id %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger btn-lg" id="deleteButton" disabled>
+                            <i class="fas fa-trash"></i> Delete Complaint Permanently
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle text-info"></i> What will be deleted?
+                </h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-danger"></i> The complaint record</li>
+                    <li><i class="fas fa-check text-danger"></i> All status history entries</li>
+                    <li><i class="fas fa-check text-danger"></i> All associated metadata</li>
+                </ul>
+                <p class="text-muted small">
+                    <strong>Note:</strong> The user account will not be affected by this deletion.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('confirmDelete');
+    const deleteButton = document.getElementById('deleteButton');
+    
+    checkbox.addEventListener('change', function() {
+        deleteButton.disabled = !this.checked;
+    });
+});
+</script>
+{% endblock %}

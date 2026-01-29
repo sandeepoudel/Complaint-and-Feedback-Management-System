@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ action }} Complaint{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Back Navigation -->
+        <div class="mb-3">
+            {% if complaint %}
+                <a href="{% url 'complaint_detail' complaint.id %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Complaint
+                </a>
+            {% else %}
+                <a href="{% url 'complaint_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to My Complaints
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Form Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">{{ action }} Complaint</h3>
+                {% if action == 'Update' %}
+                    <small class="text-muted">Complaint #{{ complaint.id }}</small>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Display form errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Title Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            Title <span class="text-danger">*</span>
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.title.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Provide a clear, concise title for your complaint (minimum 5 characters).
+                        </div>
+                    </div>
+
+                    <!-- Category Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.category.id_for_label }}" class="form-label">
+                            Category <span class="text-danger">*</span>
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.category.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Select the category that best describes your complaint.
+                        </div>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.description.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Provide detailed information about your complaint (minimum 10 characters). 
+                            Include relevant details that will help us understand and address your concern.
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            {% if complaint %}
+                                <a href="{% url 'complaint_detail' complaint.id %}" class="btn btn-secondary">Cancel</a>
+                            {% else %}
+                                <a href="{% url 'complaint_list' %}" class="btn btn-secondary">Cancel</a>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                {% if action == 'Create' %}
+                                    <i class="fas fa-paper-plane"></i> Submit Complaint
+                                {% else %}
+                                    <i class="fas fa-save"></i> Update Complaint
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Information -->
+        <div class="card mt-4 bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle text-info"></i> Tips for Effective Complaints
+                </h6>
+                <ul class="card-text small mb-0">
+                    <li>Be specific and clear in your title</li>
+                    <li>Provide detailed information in the description</li>
+                    <li>Choose the most appropriate category</li>
+                    <li>Include relevant dates, times, or reference numbers if applicable</li>
+                    {% if action == 'Update' %}
+                        <li>Note: You can only edit complaints that haven't been resolved</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

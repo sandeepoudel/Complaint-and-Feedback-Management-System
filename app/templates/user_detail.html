@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">User Profile</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Username:</strong> {{ profile_user.username }}
+                </div>
+                <div class="mb-3">
+                    <strong>Email:</strong> {{ profile_user.email }}
+                </div>
+                <div class="mb-3">
+                    <strong>Date Joined:</strong> {{ profile_user.date_joined|date:"F d, Y" }}
+                </div>
+                {% if profile_user.is_admin %}
+                    <div class="mb-3">
+                        <span class="badge bg-primary">Administrator</span>
+                    </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{% url 'user_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

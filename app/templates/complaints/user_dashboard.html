@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="fw-bold text-primary mb-4">Welcome, {{ user.username }}!</h2>
+        
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ total_complaints }}</h4>
+                                <p class="card-text">Total Complaints</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clipboard-list fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ open_complaints }}</h4>
+                                <p class="card-text">Open</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-exclamation-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ in_progress_complaints }}</h4>
+                                <p class="card-text">In Progress</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ resolved_complaints }}</h4>
+                                <p class="card-text">Resolved</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <a href="{% url 'complaint_create' %}" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-plus"></i> Submit New Complaint
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="{% url 'complaint_list' %}" class="btn btn-outline-primary btn-lg w-100">
+                                    <i class="fas fa-list"></i> View All My Complaints
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="{% url 'complaint_list' %}?status=open" class="btn btn-outline-warning btn-lg w-100">
+                                    <i class="fas fa-exclamation-circle"></i> View Open Complaints
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Complaints -->
+        {% if recent_complaints %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Complaints</h5>
+                            <a href="{% url 'complaint_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for complaint in recent_complaints %}
+                                        <tr>
+                                            <td><strong>#{{ complaint.id }}</strong></td>
+                                            <td>
+                                                <a href="{% url 'complaint_detail' complaint.id %}" class="text-decoration-none">
+                                                    {{ complaint.title|truncatechars:40 }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {% if complaint.status == 'open' %}
+                                                    <span class="badge bg-warning text-dark">{{ complaint.get_status_display }}</span>
+                                                {% elif complaint.status == 'in_progress' %}
+                                                    <span class="badge bg-primary">{{ complaint.get_status_display }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">{{ complaint.get_status_display }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ complaint.created_at|date:"M d, Y" }}</td>
+                                            <td>
+                                                <a href="{% url 'complaint_detail' complaint.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No complaints yet</h4>
+                            <p class="text-muted">You haven't submitted any complaints yet. Get started by submitting your first complaint.</p>
+                            <a href="{% url 'complaint_create' %}" class="btn btn-primary">Submit Your First Complaint</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

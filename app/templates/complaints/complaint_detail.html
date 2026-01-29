@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Complaint #{{ complaint.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Back Navigation -->
+        <div class="mb-3">
+            <a href="{% url 'complaint_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to My Complaints
+            </a>
+        </div>
+
+        <!-- Complaint Details Card -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Complaint #{{ complaint.id }}</h3>
+                <div>
+                    {% if complaint.status == 'open' %}
+                        <span class="badge bg-warning text-dark fs-6">{{ complaint.get_status_display }}</span>
+                    {% elif complaint.status == 'in_progress' %}
+                        <span class="badge bg-primary fs-6">{{ complaint.get_status_display }}</span>
+                    {% else %}
+                        <span class="badge bg-success fs-6">{{ complaint.get_status_display }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 class="text-primary mb-3">{{ complaint.title }}</h4>
+                        <div class="mb-3">
+                            <strong>Category:</strong> 
+                            <span class="badge bg-info">{{ complaint.get_category_display }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Description:</strong>
+                            <div class="mt-2 p-3 bg-light rounded">
+                                {{ complaint.description|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Complaint Information</h6>
+                                <p class="card-text small">
+                                    <strong>Submitted:</strong><br>
+                                    {{ complaint.created_at|date:"F d, Y \a\t g:i A" }}
+                                </p>
+                                <p class="card-text small">
+                                    <strong>Last Updated:</strong><br>
+                                    {{ complaint.updated_at|date:"F d, Y \a\t g:i A" }}
+                                </p>
+                                {% if complaint.resolved_at %}
+                                    <p class="card-text small">
+                                        <strong>Resolved:</strong><br>
+                                        {{ complaint.resolved_at|date:"F d, Y \a\t g:i A" }}
+                                    </p>
+                                    {% if complaint.resolved_by %}
+                                        <p class="card-text small">
+                                            <strong>Resolved By:</strong><br>
+                                            {{ complaint.resolved_by.username }}
+                                        </p>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-4">
+                    {% if can_edit %}
+                        <a href="{% url 'complaint_update' complaint.id %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit Complaint
+                        </a>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> This complaint has been resolved and cannot be edited.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Status History -->
+        {% if status_history %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Status History</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for history in status_history %}
+                            <div class="timeline-item mb-3">
+                                <div class="row">
+                                    <div class="col-md-2 text-muted small">
+                                        {{ history.changed_at|date:"M d, Y" }}<br>
+                                        {{ history.changed_at|time:"g:i A" }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>{{ history.changed_by.username }}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% if history.old_status %}
+                                            <span class="badge bg-secondary">{{ history.old_status|title }}</span>
+                                            <i class="fas fa-arrow-right mx-2"></i>
+                                        {% endif %}
+                                        <span class="badge bg-primary">{{ history.new_status|title }}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% if history.notes %}
+                                            <small class="text-muted">{{ history.notes }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if not forloop.last %}
+                                    <hr class="my-3">
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 100%;
+    height: 20px;
+    width: 2px;
+    background-color: #dee2e6;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: #007bff;
+}
+</style>
+{% endblock %}

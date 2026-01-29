@@ -211,6 +211,28 @@
       <div class="collapse navbar-collapse" id="mainNavbar">
         <ul class="navbar-nav ms-auto">
           {% if user.is_authenticated %}
+            <!-- Complaint Management Links -->
+            <li class="nav-item">
+              <a href="{% url 'user_dashboard' %}" class="nav-link">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'complaint_list' %}" class="nav-link">My Complaints</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'complaint_create' %}" class="nav-link">Submit Complaint</a>
+            </li>
+            {% if user.is_admin %}
+              <!-- Admin Links -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                  Admin Panel
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{% url 'admin_complaint_list' %}">All Complaints</a></li>
+                </ul>
+              </li>
+            {% endif %}
             <!-- User Info and Logout after login -->
             <li class="nav-item">
               <a href="{% url 'user_detail' pk=user.pk %}" class="nav-link">User Info</a>
